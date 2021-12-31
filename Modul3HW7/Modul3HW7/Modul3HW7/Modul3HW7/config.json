@@ -1,0 +1,11 @@
+{
+  "Logger": {
+    "TimeFormat": "hh.mm.ss dd.MM.yyyy",
+    "FileName": null,
+    "FileExtensions": ".txt",
+    "DirectoryName": "Logger reports",
+    "DirectoryPath": "C:\\Users\\admin\\source\\repos\\Sofia-Rutskaya\\Modul3HW7\\Modul3HW7\\Modul3HW7\\Modul3HW7\\Modul3HW7",
+    "DirectoryBackupPath": "\\Backup",
+    "Backup" :  5
+  }
+}
