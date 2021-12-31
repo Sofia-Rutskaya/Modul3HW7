@@ -13,5 +13,7 @@ namespace Modul3HW7.Services.Additional
         public Task InitDirectory(string path);
         public IDisposable CreateStream(string path);
         public IDisposable CloseStream(string path);
+        public Task SetBackupPath(string path);
+        public Task SaveBackupInFile(string path, string content);
     }
 }

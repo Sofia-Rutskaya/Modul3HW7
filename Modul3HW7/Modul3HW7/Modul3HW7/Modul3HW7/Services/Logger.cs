@@ -14,6 +14,7 @@ namespace Modul3HW7.Services
         private static readonly Logger _instance = new Logger();
         private DateTime _date;
         private IFileService _fileService;
+        private int _countBackup;
 
         static Logger()
         {
@@ -57,6 +58,13 @@ namespace Modul3HW7.Services
             return result;
         }
 
+        public void Backup()
+        {
+            var path = $"{DirectPath()}{_config.Logger.DirectoryBackupPath}";
+            _fileService.SetBackupPath(path);
+            _fileService.SaveBackupInFile(path, FilePath());
+        }
+
         public string DirectPath()
         {
             var dirPath = $"{_config.Logger.DirectoryPath}\\{_config.Logger.DirectoryName}";
@@ -65,6 +73,13 @@ namespace Modul3HW7.Services
 
         private async Task Log(LogType type, string message)
         {
+            if (_countBackup >= _config.Logger.Backup)
+            {
+                Backup();
+                _countBackup = 0;
+            }
+
+            _countBackup++;
             var log = $"{DateTime.UtcNow}: {type.ToString()}: {message}";
             await _fileService.SaveInFile(log);
         }

@@ -13,7 +13,6 @@ namespace Modul3HW7.Services
     {
         private FileStream _newFile;
         private byte[] _buffer;
-        private int _backup;
 
         public FileService()
         {
@@ -33,7 +32,18 @@ namespace Modul3HW7.Services
         {
             _buffer = System.Text.Encoding.Default.GetBytes($"{message} {Environment.NewLine}");
             await _newFile.WriteAsync(_buffer, 0, _buffer.Length);
-            _backup++;
+        }
+
+        public async Task SaveBackupInFile(string path, string content)
+        {
+            path = $"{path}\\{DateTime.UtcNow}.txt";
+            File.Create(path);
+            await File.AppendAllTextAsync(path, await File.ReadAllTextAsync(content));
+        }
+
+        public async Task SetBackupPath(string path)
+        {
+            await InitDirectory(path);
         }
 
         public IDisposable CreateStream(string path)
