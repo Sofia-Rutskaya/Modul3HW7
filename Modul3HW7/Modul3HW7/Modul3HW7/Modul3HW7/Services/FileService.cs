@@ -11,70 +11,93 @@ namespace Modul3HW7.Services
 {
     public class FileService : IFileService
     {
+        private readonly object _lock = new object();
         private FileStream _newFile;
-        private byte[] _buffer;
 
         public FileService()
         {
         }
 
-        public async Task InitDirectory(string path)
+        public void InitDirectory(string dirPath, string filePath)
         {
-            if (!Directory.Exists(path))
+            if (!Directory.Exists(dirPath))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(dirPath);
             }
 
-            await ClearDirect(path);
+            ClearDirect(dirPath);
+
+            if (filePath == null)
+            {
+                return;
+            }
+
+           // _newFile = CreateStream(filePath);
         }
 
-        public async Task SaveInFile(string message)
+        public void SetMainFile(FileStream file)
         {
-            _buffer = System.Text.Encoding.Default.GetBytes($"{message} {Environment.NewLine}");
-            await _newFile.WriteAsync(_buffer, 0, _buffer.Length);
+            _newFile = file;
         }
 
-        public async Task SaveBackupInFile(string path, string content)
+        public async Task SaveInFile(string message, string filePath = "", bool backup = false, string backupPath = "")
         {
-            path = $"{path}\\{DateTime.UtcNow}.txt";
-            File.Create(path);
-            await File.AppendAllTextAsync(path, await File.ReadAllTextAsync(content));
+            // _buffer = System.Text.Encoding.Default.GetBytes($"{message} {Environment.NewLine}");
+            lock (_lock)
+            {
+                using (var sw = new StreamWriter(filePath, true, System.Text.Encoding.Default))
+                {
+                    sw.WriteLineAsync(message);
+                }
+
+                if (backup)
+                {
+                    var time = $"{DateTime.UtcNow.Hour}-{DateTime.UtcNow.Minute}-{DateTime.UtcNow.Second}-{DateTime.UtcNow.Millisecond}";
+                    backupPath = $"{backupPath}\\{time}.txt";
+                    using (var sw = new StreamWriter(backupPath, true, System.Text.Encoding.Default))
+                    {
+                        sw.WriteLine(File.ReadAllText(filePath));
+                    }
+                }
+            }
+
+            await Task.Delay(1);
         }
 
-        public async Task SetBackupPath(string path)
+        public void SetBackupPath(string dirPath)
         {
-            await InitDirectory(path);
+            InitDirectory(dirPath, null);
         }
 
-        public IDisposable CreateStream(string path)
+        public FileStream CreateStream(string dirPath)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(dirPath))
             {
                 return null;
             }
 
-            _newFile = new FileStream(path, FileMode.Append);
-            return _newFile;
+            var disposable = new FileStream(dirPath, FileMode.OpenOrCreate);
+            return disposable;
         }
 
-        public IDisposable CloseStream(string path)
+        public FileStream CloseStream(string dirPath, FileStream disposable)
         {
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(dirPath))
             {
                 return null;
             }
 
-            _newFile.Close();
-            return _newFile;
+            disposable.Close();
+            return disposable;
         }
 
-        private async Task ClearDirect(string path)
+        private void ClearDirect(string dirPath)
         {
-            var result = Directory.GetFiles(path);
+            var result = Directory.GetFiles(dirPath);
 
             foreach (var item in result)
             {
-                await Task.Run(() => { File.Delete(item); });
+                File.Delete(item);
             }
         }
     }

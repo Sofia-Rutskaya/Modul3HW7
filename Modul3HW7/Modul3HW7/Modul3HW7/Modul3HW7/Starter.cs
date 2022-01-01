@@ -32,33 +32,26 @@ namespace Modul3HW7
 
         public void Run()
         {
-            var firstRun = new TaskCompletionSource();
-            var secondRun = new TaskCompletionSource();
-            Task.Run(() =>
+            var list = new List<Task>();
+            list.Add(Task.Run(async () =>
             {
-                for (var i = 0; i < 50; i++)
+                for (var i = 0; i < 10; i++)
                 {
-                    GetMethod();
+                   await GetMethod();
                 }
+            }));
 
-                firstRun.SetResult();
-            });
-
-            Task.Run(() =>
+            list.Add(Task.Run(async () =>
             {
-                for (var i = 0; i < 50; i++)
+                for (var i = 0; i < 10; i++)
                 {
-                    GetMethod();
+                    await GetMethod();
                 }
-
-                secondRun.SetResult();
-            });
-
-            firstRun.Task.GetAwaiter().GetResult();
-            secondRun.Task.GetAwaiter().GetResult();
+            }));
+            Task.WhenAll(list).GetAwaiter().GetResult();
         }
 
-        public void GetMethod()
+        public async Task GetMethod()
         {
             try
             {
@@ -67,7 +60,7 @@ namespace Modul3HW7
                     case 1:
                         Console.WriteLine($"Run_1 ---- 1 ----");
 
-                        Task.Run(async () => { await _actions.Method_1(); });
+                        await _actions.Method_1();
                         break;
                     case 2:
                         Console.WriteLine($"Run_1 ---- 2 ----");
@@ -83,11 +76,11 @@ namespace Modul3HW7
             }
             catch (BusinessException ex)
             {
-                _log.LogWarning($"Action got this custom Exception : {ex.Message}");
+                await _log.LogWarning($"Action got this custom Exception : {ex.Message}");
             }
             catch (Exception ex)
             {
-                _log.LogError($"Action failed by reason: {ex.Message}");
+                await _log.LogError($"Action failed by reason: {ex.Message}");
             }
         }
     }
