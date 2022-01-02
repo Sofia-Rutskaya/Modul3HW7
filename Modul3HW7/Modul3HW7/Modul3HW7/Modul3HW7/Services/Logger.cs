@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Modul3HW7.Configs;
 using Modul3HW7.Services.Additional;
@@ -13,9 +14,10 @@ namespace Modul3HW7.Services
     {
         private Config _config;
         private static readonly Logger _instance = new Logger();
+        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
         private DateTime _date;
         private IFileService _fileService;
-        private int _countBackup;
+        private volatile int _countBackup;
 
         static Logger()
         {
@@ -66,19 +68,21 @@ namespace Modul3HW7.Services
 
         private async Task Log(LogType type, string message)
         {
-            _countBackup++;
             var log = $"{DateTime.UtcNow}: {type.ToString()}: {message}";
-
+            await _semaphoreSlim.WaitAsync();
             if (_countBackup >= _config.Logger.Backup)
             {
-                var filePath = $"{DirectPath()}{_config.Logger.DirectoryBackupPath}";
-                await _fileService.SaveInFile(log, _config.Logger.FilePath, true, filePath);
                 _countBackup = 0;
+                var filePath = $"{DirectPath()}{_config.Logger.DirectoryBackupPath}";
+                await _fileService.SaveInFile(log, _config.Logger.FilePath, true, filePath, _config.Logger.Backup);
             }
             else
             {
                 await _fileService.SaveInFile(log, _config.Logger.FilePath);
+                _countBackup++;
             }
+
+            _semaphoreSlim.Release();
         }
     }
 }

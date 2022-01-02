@@ -35,7 +35,7 @@ namespace Modul3HW7
             var list = new List<Task>();
             list.Add(Task.Run(async () =>
             {
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < 50; i++)
                 {
                    await GetMethod();
                 }
@@ -43,7 +43,7 @@ namespace Modul3HW7
 
             list.Add(Task.Run(async () =>
             {
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < 50; i++)
                 {
                     await GetMethod();
                 }
