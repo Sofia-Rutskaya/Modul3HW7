@@ -12,9 +12,7 @@ namespace Modul3HW7.Services
 {
     public class FileService : IFileService
     {
-        private readonly object _lock = new object();
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
-        private FileStream _newFile;
 
         public FileService()
         {
@@ -33,18 +31,10 @@ namespace Modul3HW7.Services
             {
                 return;
             }
-
-           // _newFile = CreateStream(filePath);
         }
 
-        public void SetMainFile(FileStream file)
+        public async Task SaveInFile(string message, string filePath = "")
         {
-            _newFile = file;
-        }
-
-        public async Task SaveInFile(string message, string filePath = "", bool backup = false, string backupPath = "", int countConfigLines = 0)
-        {
-            // _buffer = System.Text.Encoding.Default.GetBytes($"{message} {Environment.NewLine}");
             await _semaphoreSlim.WaitAsync();
 
             using (var sw = new StreamWriter(filePath, true, System.Text.Encoding.Default))
@@ -52,6 +42,11 @@ namespace Modul3HW7.Services
                 await sw.WriteLineAsync(message);
             }
 
+            _semaphoreSlim.Release();
+        }
+
+        public async Task Backup(string filePath = "", bool backup = false, string backupPath = "", int countConfigLines = 0)
+        {
             if (backup)
             {
                 var time = $"{DateTime.UtcNow.Hour}-{DateTime.UtcNow.Minute}-{DateTime.UtcNow.Second}-{DateTime.UtcNow.Millisecond}";
@@ -71,35 +66,11 @@ namespace Modul3HW7.Services
                     }
                 }
             }
-
-            _semaphoreSlim.Release();
         }
 
         public void SetBackupPath(string dirPath)
         {
             InitDirectory(dirPath, null);
-        }
-
-        public FileStream CreateStream(string dirPath)
-        {
-            if (string.IsNullOrWhiteSpace(dirPath))
-            {
-                return null;
-            }
-
-            var disposable = new FileStream(dirPath, FileMode.OpenOrCreate);
-            return disposable;
-        }
-
-        public FileStream CloseStream(string dirPath, FileStream disposable)
-        {
-            if (string.IsNullOrWhiteSpace(dirPath))
-            {
-                return null;
-            }
-
-            disposable.Close();
-            return disposable;
         }
 
         private void ClearDirect(string dirPath)

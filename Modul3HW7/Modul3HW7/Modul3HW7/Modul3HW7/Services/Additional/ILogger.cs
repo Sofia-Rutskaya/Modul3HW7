@@ -11,11 +11,11 @@ namespace Modul3HW7.Services
     {
         public event Action LoggerEvent;
 
-        public Task LogInfo(string message);
+        public Task LogInfoAsync(string message);
 
-        public Task LogError(string message);
+        public Task LogErrorAsync(string message);
 
-        public Task LogWarning(string message);
+        public Task LogWarningAsync(string message);
 
         public void SetConfig(Config config);
 

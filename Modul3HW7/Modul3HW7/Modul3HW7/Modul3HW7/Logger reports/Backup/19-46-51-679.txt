@@ -1,0 +1,24 @@
+1/3/2022 7:46:50 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:50 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:50 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:50 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:50 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:50 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:50 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+
+
+1/3/2022 7:46:51 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:51 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:51 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Info: Start method: Method_1
+1/3/2022 7:46:51 PM: Info: Start method: Method_1
+1/3/2022 7:46:51 PM: Error: Action failed by reason: I broke a logic
+1/3/2022 7:46:51 PM: Warning: Action got this custom Exception : Skipped logic in method
+1/3/2022 7:46:51 PM: Info: Start method: Method_1
+
+

@@ -31,11 +31,11 @@ namespace Modul3HW7.Services
 
         public static Logger Instance => _instance;
 
-        public async Task LogInfo(string message) => await Log(LogType.Info, message);
+        public async Task LogInfoAsync(string message) => await LogAsync(LogType.Info, message);
 
-        public async Task LogError(string message) => await Log(LogType.Error, message);
+        public async Task LogErrorAsync(string message) => await LogAsync(LogType.Error, message);
 
-        public async Task LogWarning(string message) => await Log(LogType.Warning, message);
+        public async Task LogWarningAsync(string message) => await LogAsync(LogType.Warning, message);
 
         public void SetConfig(Config config)
         {
@@ -66,21 +66,20 @@ namespace Modul3HW7.Services
             return dirPath;
         }
 
-        private async Task Log(LogType type, string message)
+        private async Task LogAsync(LogType type, string message)
         {
             var log = $"{DateTime.UtcNow}: {type.ToString()}: {message}";
             await _semaphoreSlim.WaitAsync();
+
             if (_countBackup >= _config.Logger.Backup)
             {
                 _countBackup = 0;
                 var filePath = $"{DirectPath()}{_config.Logger.DirectoryBackupPath}";
-                await _fileService.SaveInFile(log, _config.Logger.FilePath, true, filePath, _config.Logger.Backup);
+                await _fileService.Backup(_config.Logger.FilePath, true, filePath, _config.Logger.Backup);
             }
-            else
-            {
-                await _fileService.SaveInFile(log, _config.Logger.FilePath);
-                _countBackup++;
-            }
+
+            await _fileService.SaveInFile(log, _config.Logger.FilePath);
+            _countBackup++;
 
             _semaphoreSlim.Release();
         }

@@ -76,11 +76,11 @@ namespace Modul3HW7
             }
             catch (BusinessException ex)
             {
-                await _log.LogWarning($"Action got this custom Exception : {ex.Message}");
+                await _log.LogWarningAsync($"Action got this custom Exception : {ex.Message}");
             }
             catch (Exception ex)
             {
-                await _log.LogError($"Action failed by reason: {ex.Message}");
+                await _log.LogErrorAsync($"Action failed by reason: {ex.Message}");
             }
         }
     }

@@ -17,7 +17,7 @@ namespace Modul3HW7.Services
 
         public async Task Method_1()
         {
-            await _logger.LogInfo($"Start method: {nameof(Method_1)}");
+            await _logger.LogInfoAsync($"Start method: {nameof(Method_1)}");
         }
 
         public bool Method_2()

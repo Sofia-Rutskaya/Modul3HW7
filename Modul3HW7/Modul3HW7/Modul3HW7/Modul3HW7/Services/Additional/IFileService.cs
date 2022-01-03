@@ -10,11 +10,9 @@ namespace Modul3HW7.Services.Additional
 {
     public interface IFileService
     {
-        public Task SaveInFile(string message, string filePath = "", bool backup = false, string backupPath = "", int countConfigLines = 0);
+        public Task SaveInFile(string message, string filePath = "");
+        public Task Backup(string filePath = "", bool backup = false, string backupPath = "", int countConfigLines = 0);
         public void InitDirectory(string dirPath, string filePath);
-        public FileStream CreateStream(string filePath);
-        public FileStream CloseStream(string filePath, FileStream disposable);
         public void SetBackupPath(string filePath);
-        public void SetMainFile(FileStream file);
     }
 }
